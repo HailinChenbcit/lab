@@ -1,32 +1,29 @@
-const http = require("http");
-const url = require("url");
 const { message } = require("./lang/messages/en/en");
 const { getDate } = require("./modules/utils");
 
-const PORT = 8000;
-
-const server = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  if (parsedUrl.pathname === "/lab3/") {
-    const name = parsedUrl.query.name;
-
-    if (!name) {
-      res.writeHead(400, { "Content-Type": "text/html" });
-      res.end(message.error);
-      return;
-    }
-
-    const responseMessage = getDate(name, message.success);
-
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.end(responseMessage);
-  } else {
-    res.writeHead(404, { "Content-Type": "text/html" });
-    res.end(message[404]);
+exports.handler = async (event) => {
+  if (event.httpMethod !== "GET") {
+    return {
+      statusCode: 405,
+      body: message[405],
+    };
   }
-});
 
-// Start the server
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+  const params = event.queryStringParameters;
+  const name = params.name;
+
+  if (!name) {
+    return {
+      statusCode: 400,
+      body: message.error,
+    };
+  }
+
+  const responseMessage = getDate(name, message.success);
+
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "text/html" },
+    body: responseMessage,
+  };
+};
