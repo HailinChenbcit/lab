@@ -1,0 +1,13 @@
+{
+    "name": "my-server",
+    "version": "1.0.0",
+    "description": "Node.js API for COMP4537-Lab3",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "url": "^0.11.0"
+    }
+  }
+  
